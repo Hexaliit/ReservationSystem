@@ -1,0 +1,26 @@
+﻿@model Category
+
+<div class="container">
+    <div class="col-md-8">
+        <h2 class="p-2">@Model.Name</h2>
+        <h5 class="p-2">@Model.Description</h5>
+        @if(Model.Menus.Count() > 0)
+        {
+            @foreach (var menu in Model.Menus)
+            {
+                <a asp-controller="Menus" asp-action="Get" asp-route-id="@menu.Id">
+                    <div class="row mb-2 align-items-start">
+                        <div class="col-8 p-1"><p>@menu.Name</p></div>
+                        <div class="col-4 p-1"><span>@menu.Price</span></div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <span>
+                No Menus for this category
+            </span>
+        }
+    </div>
+</div>

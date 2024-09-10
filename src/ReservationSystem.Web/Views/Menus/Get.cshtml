@@ -1,0 +1,25 @@
+﻿@model Menu
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <img src="@Model.ImageUrl" alt="Alternate Text" />
+        </div>
+        <div class="col-md-4">
+            <h3>@Model.Name</h3>
+            <p>@Model.Description</p>
+            <span>@Model.Price</span>
+            <div class="row">
+                <div class="col-6">
+                    <a class="btn btn-primary" asp-controller="Menus" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                </div>
+                <div class="col-6">
+                    <form asp-controller="Menus" asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="submit" class="btn btn-danger" value="Delete" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
