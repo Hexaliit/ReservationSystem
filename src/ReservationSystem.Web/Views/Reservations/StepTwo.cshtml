@@ -1,0 +1,48 @@
+﻿@model TablesViewModel
+
+<div class="container w-full px-5 py-6 mx-auto">
+    <div class="flex items-center justify-center p-6">
+        <div class="w-full">
+            <h3 class="mb-4 text-xl font-bold">Make Reservation</h3>
+
+            <div class="w-full  rounded-full">
+                <div class="w-100 p-1 text-xs font-medium leading-none text-center">
+                    Step 2
+                </div>
+            </div>
+
+            <form method="post" asp-controller="Reservations" asp-action="StepTwo">
+                <div class="form-group">
+                    <label asp-for="@Model">Table</label>
+                    @if(Model.Tables is not null && Model.Tables.Count() > 0)
+                    {
+                        <select class="form-select" asp-for="@Model.Table.Id">
+                            @foreach (var table in Model.Tables)
+                            {
+                                <option value="@table.Id">@table.Location - @table.Capacity</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <span>
+                            No tables for this criteria
+                        </span>
+                    }
+                </div>
+
+                <div class="mt-6 py-4 flex justify-between">
+                    <a asp-controller="Reservations" asp-action="StepOne"
+                       class="px-4 py-2  btn btn-danger">Previous</a>
+                    <button type="submit"
+                            class="px-4 py-2 btn btn-success">
+                        Make
+                        Reservation
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+     </div>
+</div>

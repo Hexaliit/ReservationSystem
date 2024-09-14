@@ -22,6 +22,8 @@ namespace ReservationSystem.Infrastructure.Extensions
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<ITableRepository, TableRepository>();
         }
     }
 }

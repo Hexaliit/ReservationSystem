@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Table>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            @if(Model.Count() > 0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Capacity</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var table in Model)
+                        {
+                            <tr>
+                                <td>@table.Name</td>
+                                <td>@table.Status</td>
+                                <td>@table.Capacity</td>
+                                <td>@table.Location</td>
+                                <td>
+                                    <div clas="row">
+                                        <div class="col-6">
+                                            <a class="btn btn-primary" asp-asp-controller="Tables" asp-action="Edit" asp-route-id="@table.Id">Edit</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <form>
+                                                <input type="hidden" asp-for="@table.Id" />
+                                                <input type="submit" value="Delete" class="btn btn-danger" />
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <span>
+                    No Tables Yet !
+                </span>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <a asp-asp-controller="Tables" asp-action="Add" class="btn btn-primary">Add</a>
+        </div>
+    </div>
+</div>

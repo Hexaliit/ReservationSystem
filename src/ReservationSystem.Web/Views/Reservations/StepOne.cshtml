@@ -1,0 +1,54 @@
+﻿@model Reservation
+
+<div class="container">
+    <form asp-controller="Reservations" asp-action="StepOne" method="post">
+        <div class="mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-4">
+                <h3 class="fs-5 fw-bolder m-0 lh-1">Reservation</h3>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="form-label">First name</label>
+                        <input type="text" asp-for="FirstName" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="lastName" class="form-label">Last name</label>
+                        <input type="text" asp-for="lastName" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input type="text" asp-for="Email" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="Phone" class="form-label">Phone</label>
+                        <input type="text" asp-for="Phone" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="NumberOfGuests" class="form-label">Number of guests</label>
+                        <input type="number" asp-for="NumberOfGuests" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="ReservationDate" class="form-label">Reservation date</label>
+                        <input type="datetime-local" min="@ViewBag.minDate" max="@ViewBag.maxDate" asp-for="ReservationDate" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto align-center">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

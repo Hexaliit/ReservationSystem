@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ReservationSystem.Domain.Entities;
 using ReservationSystem.Infrastructure.Persistence.Configurations;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReservationSystem.Infrastructure.Persistence.DbContextes
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
