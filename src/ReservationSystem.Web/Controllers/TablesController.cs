@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ReservationSystem.Domain.Entities;
-using ReservationSystem.Domain.Interfaces.Repositories;
+using ReservationSystem.Web.Models;
+using ReservationSystem.Web.Models.Repositories.Interface;
 using ReservationSystem.Web.ViewModel;
 
 namespace ReservationSystem.Web.Controllers

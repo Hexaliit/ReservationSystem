@@ -1,19 +1,50 @@
 ﻿@model Category
 
-<div class="container">
-    <div class="col-md-8">
-        <h2 class="p-2">@Model.Name</h2>
-        <h5 class="p-2">@Model.Description</h5>
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SigninManager
+
+    <div class="col-md-8 align-items-center mx-auto">
+    @if(ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-warning">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+    <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="p-2">@Model.Name</h2>
+                <p class="p-2">@Model.Description</p>
+            </div>
+            <div class="col-md-4">
+            @if (SigninManager.IsSignedIn(User))
+            {
+                <div class="row">
+                    <div class="col-6">
+                        <a class="btn btn-primary" asp-controller="Categories" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                    </div>
+                    <div class="col-6">
+                        <form asp-controller="Categories" asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="@Model.Id" />
+                            <input id="DeleteMenu" type="submit" class="btn btn-danger" value="Delete" />
+                        </form>
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+        
+    
         @if(Model.Menus.Count() > 0)
         {
             @foreach (var menu in Model.Menus)
             {
-                <a asp-controller="Menus" asp-action="Get" asp-route-id="@menu.Id">
-                    <div class="row mb-2 align-items-start">
-                        <div class="col-8 p-1"><p>@menu.Name</p></div>
-                        <div class="col-4 p-1"><span>@menu.Price</span></div>
-                    </div>
-                </a>
+                <div class="row">
+                    <a class="d-flex justify-content-between" asp-controller="Menus" asp-action="Get" asp-route-id="@menu.Id">
+                            <div class="col-8 p-1"><p>@menu.Name</p></div>
+                            <div class="col-4 p-1"><span>@menu.Price</span></div>
+                    </a>
+                </div>
             }
         }
         else
@@ -23,4 +54,3 @@
             </span>
         }
     </div>
-</div>

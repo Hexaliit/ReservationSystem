@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ReservationSystem.Domain.Entities;
-using ReservationSystem.Domain.Interfaces.Repositories;
+using ReservationSystem.Web.Models;
+using ReservationSystem.Web.Models.Repositories.Interface;
+using ReservationSystem.Web.Services.ImageService.Interface;
 using ReservationSystem.Web.ViewModel;
 using System.Reflection.Metadata.Ecma335;
 
@@ -10,12 +11,15 @@ namespace ReservationSystem.Web.Controllers
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMenuRepository menuRepository;
+        private readonly IImageService imageService;
 
         public MenusController(ICategoryRepository categoryRepository,
-            IMenuRepository menuRepository)
+            IMenuRepository menuRepository,
+            IImageService imageService)
         {
             this.categoryRepository = categoryRepository;
             this.menuRepository = menuRepository;
+            this.imageService = imageService;
         }
         public IActionResult Index()
         {
@@ -39,8 +43,23 @@ namespace ReservationSystem.Web.Controllers
             };
             return View(menuViewModel);
         }
+
+        [HttpPost]
+        public IActionResult Add([FromForm] MenuViewModel menuViewModel)
+        {
+            var imageUrl = imageService.Save(menuViewModel.Image!);
+            menuViewModel.Menu.ImageUrl = imageUrl;
+            menuRepository.Add(menuViewModel.Menu);
+            return RedirectToAction("Index");
+        }
         public IActionResult Edit(int id)
         {
+            var menu = menuRepository.GetById(id);
+            if(menu is null)
+            {
+                return NotFound();
+            }
+
             var menuViewModel = new MenuViewModel()
             {
                 Categories = categoryRepository.GetAllCategories(),
@@ -57,23 +76,25 @@ namespace ReservationSystem.Web.Controllers
             {
                 return NotFound();
             }
+            if(viewModel.Image != null)
+            {
+                var path = imageService.Save(viewModel.Image);
+                //imageService.Delete(viewModel.Menu.ImageUrl);
+                menu.ImageUrl = path;
+            }
             menu.Name = viewModel.Menu.Name;
             menu.Description = viewModel.Menu.Description;
             menu.Price = viewModel.Menu.Price;
-            menu.ImageUrl = viewModel.Menu.ImageUrl;
-            menu.Price = viewModel.Menu.Price;
+            menu.CategoryId = viewModel.Menu.CategoryId;
+
+
 
             menuRepository.Update(menu);
             return RedirectToAction("Index");
             
         }
 
-        [HttpPost]
-        public IActionResult Add(MenuViewModel menuViewModel)
-        {
-            menuRepository.Add(menuViewModel.Menu);
-            return RedirectToAction("Index");
-        }
+        
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -82,6 +103,7 @@ namespace ReservationSystem.Web.Controllers
             {
                 return NotFound();
             }
+            //imageService.Delete(menu.ImageUrl!);
             menuRepository.Delete(menu);
             return RedirectToAction("Index");
         }

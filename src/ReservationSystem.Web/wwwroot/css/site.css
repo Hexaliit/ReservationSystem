@@ -36,3 +36,10 @@ a:hover {
     background-size : cover;
     background-repeat : no-repeat
 }
+.image-detail {
+    height : 500px;
+}
+
+.image-category {
+    height : 150px;
+}

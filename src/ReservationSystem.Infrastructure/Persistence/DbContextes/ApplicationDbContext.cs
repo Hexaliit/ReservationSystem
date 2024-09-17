@@ -21,10 +21,12 @@ namespace ReservationSystem.Infrastructure.Persistence.DbContextes
         public DbSet<Table> Tables { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration<Category>(new CategoryTypeConfiguration());
+            modelBuilder.ApplyConfiguration<Role>(new RoleTypeConfiguration());
         }
 
     }

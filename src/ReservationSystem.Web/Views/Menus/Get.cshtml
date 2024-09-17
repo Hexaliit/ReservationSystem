@@ -1,25 +1,31 @@
-﻿@model Menu
+﻿@using Microsoft.AspNetCore.Identity
+@model Menu
+
+@inject SignInManager<IdentityUser> SigninManager
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8">
-            <img src="@Model.ImageUrl" alt="Alternate Text" />
+            <img src="@Url.Content(Model.ImageUrl)" alt="Alternate Text" class="w-100 image-detail" />
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mt-3">
             <h3>@Model.Name</h3>
             <p>@Model.Description</p>
             <span>@Model.Price</span>
-            <div class="row">
-                <div class="col-6">
-                    <a class="btn btn-primary" asp-controller="Menus" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+            @if(SigninManager.IsSignedIn(User))
+            {
+                <div class="row">
+                    <div class="col-6">
+                        <a class="btn btn-primary" asp-controller="Menus" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                    </div>
+                    <div class="col-6">
+                        <form asp-controller="Menus" asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="@Model.Id" />
+                            <input id="DeleteMenu" type="submit" class="btn btn-danger" value="Delete" />
+                        </form>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <form asp-controller="Menus" asp-action="Delete" method="post">
-                        <input type="hidden" asp-for="@Model.Id" />
-                        <input type="submit" class="btn btn-danger" value="Delete" />
-                    </form>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>

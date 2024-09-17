@@ -1,5 +1,5 @@
-﻿using ReservationSystem.Domain.Entities;
-using ReservationSystem.Domain.Enums;
+﻿using ReservationSystem.Web.Models;
+
 
 namespace ReservationSystem.Web.ViewModel
 {

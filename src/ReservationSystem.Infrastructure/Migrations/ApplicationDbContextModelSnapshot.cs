@@ -17,7 +17,7 @@ namespace ReservationSystem.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -30,6 +30,11 @@ namespace ReservationSystem.Infrastructure.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -47,6 +52,10 @@ namespace ReservationSystem.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityRole");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -167,10 +176,12 @@ namespace ReservationSystem.Infrastructure.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -207,10 +218,12 @@ namespace ReservationSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -337,6 +350,27 @@ namespace ReservationSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tables");
+                });
+
+            modelBuilder.Entity("ReservationSystem.Domain.Entities.Role", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.HasDiscriminator().HasValue("Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "065880f0-4a47-4eed-acdb-8c57027274e0",
+                            Name = "Admin",
+                            NormalizedName = "Admin"
+                        },
+                        new
+                        {
+                            Id = "a8003af6-067a-472f-a8a0-bc7811721284",
+                            Name = "User",
+                            NormalizedName = "User"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

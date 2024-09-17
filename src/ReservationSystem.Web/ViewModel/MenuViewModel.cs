@@ -1,4 +1,4 @@
-﻿using ReservationSystem.Domain.Entities;
+﻿using ReservationSystem.Web.Models;
 
 namespace ReservationSystem.Web.ViewModel
 {
@@ -6,5 +6,6 @@ namespace ReservationSystem.Web.ViewModel
     {
         public IEnumerable<Category> Categories { get; set; } = new List<Category>();
         public Menu Menu { get; set; } = new Menu();
+        public IFormFile? Image { get; set; }
     }
 }

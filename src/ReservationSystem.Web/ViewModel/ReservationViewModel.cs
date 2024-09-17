@@ -1,4 +1,4 @@
-﻿using ReservationSystem.Domain.Entities;
+﻿using ReservationSystem.Web.Models;
 
 namespace ReservationSystem.Web.ViewModel
 {

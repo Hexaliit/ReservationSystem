@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="col-md-8">
-        <form asp-controller="Menus" asp-action="Edit" method="post">
+        <form asp-controller="Menus" asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Menu.Id" />
             <div class="row mb-2">
                 <div class="col-2">
@@ -51,13 +51,13 @@
 
             <div class="row mb-2">
                 <div class="col-2">
-                    <label asp-for="Menu.ImageUrl" class="col-form-label">Image : </label>
+                    <label asp-for="Image" class="col-form-label">Image : </label>
                 </div>
                 <div class="col-8">
-                    <input type="text" class="form-controll" asp-for="Menu.ImageUrl" />
+                    <input type="file" class="form-controll" asp-for="Image" />
                 </div>
                 <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.ImageUrl"></span>
+                    <span class="text-danger" asp-validation-for="Image"></span>
                 </div>
             </div>
 
