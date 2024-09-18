@@ -45,7 +45,27 @@ namespace ReservationSystem.Web.Controllers
         [HttpPost]
         public IActionResult StepOne(Reservation reservation)
         {
-            if(!ModelState.IsValid)
+            if(string.IsNullOrEmpty(reservation.FirstName) || reservation.FirstName.Length > 30)
+            {
+                ModelState.AddModelError(nameof(reservation.FirstName), "FirstName is required and must be less than 30 letters");
+            }
+            if (string.IsNullOrEmpty(reservation.lastName) || reservation.lastName.Length > 50)
+            {
+                ModelState.AddModelError(nameof(reservation.lastName), "LastName is required and must be less than 50 letters");
+            }
+            if (string.IsNullOrEmpty(reservation.Email))
+            {
+                ModelState.AddModelError(nameof(reservation.Email), "Email is required");
+            }
+            if (string.IsNullOrEmpty(reservation.Phone))
+            {
+                ModelState.AddModelError(nameof(reservation.Phone), "Phone number is required");
+            }
+            if (reservation.NumberOfGuests < 1 && reservation.NumberOfGuests > 100)
+            {
+                ModelState.AddModelError(nameof(reservation.NumberOfGuests), "Number of guest must be between 1 and 100");
+            }
+            if (!ModelState.IsValid)
             {
                 return View(reservation);
             }

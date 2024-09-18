@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("ReservationConnectionString")));
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Web.Models;
 using ReservationSystem.Web.Models.Repositories.Interface;
 using ReservationSystem.Web.Services.ImageService.Interface;
@@ -29,12 +30,13 @@ namespace ReservationSystem.Web.Controllers
         public IActionResult Get(int id)
         {
             var menu = menuRepository.GetById(id);
-            if(menu is null)
+            if(menu == null)
             {
                 return NotFound();
             }
             return View(menu);
         }
+        [Authorize]
         public IActionResult Add()
         {
             var menuViewModel = new MenuViewModel()
@@ -44,18 +46,41 @@ namespace ReservationSystem.Web.Controllers
             return View(menuViewModel);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Add([FromForm] MenuViewModel menuViewModel)
         {
+            if (string.IsNullOrEmpty(menuViewModel.Menu.Name))
+            {
+                ModelState.AddModelError(nameof(menuViewModel.Menu.Name), "Name is required");
+            }
+            if (string.IsNullOrEmpty(menuViewModel.Menu.Description))
+            {
+                ModelState.AddModelError(nameof(menuViewModel.Menu.Description), "Description is required");
+            }
+            if (menuViewModel.Menu.Price < 1)
+            {
+                ModelState.AddModelError(nameof(menuViewModel.Menu.Price), "Price can not be ngative or zero.");
+            }
+            if (menuViewModel.Image == null || menuViewModel.Image.Length > 2000000)
+            {
+                ModelState.AddModelError(nameof(menuViewModel.Image), "Image is requred and should be less than 2M");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(menuViewModel);
+            }
+
             var imageUrl = imageService.Save(menuViewModel.Image!);
             menuViewModel.Menu.ImageUrl = imageUrl;
             menuRepository.Add(menuViewModel.Menu);
             return RedirectToAction("Index");
         }
+        [Authorize]
         public IActionResult Edit(int id)
         {
             var menu = menuRepository.GetById(id);
-            if(menu is null)
+            if(menu == null)
             {
                 return NotFound();
             }
@@ -67,19 +92,39 @@ namespace ReservationSystem.Web.Controllers
             };
             return View(menuViewModel);
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult Edit(int id, MenuViewModel viewModel)
         {
+            if (string.IsNullOrEmpty(viewModel.Menu.Name))
+            {
+                ModelState.AddModelError(nameof(viewModel.Menu.Name), "Name is required");
+            }
+            if (string.IsNullOrEmpty(viewModel.Menu.Description))
+            {
+                ModelState.AddModelError(nameof(viewModel.Menu.Description), "Description is required");
+            }
+            if (viewModel.Menu.Price < 1)
+            {
+                ModelState.AddModelError(nameof(viewModel.Menu.Price), "Price can not be ngative or zero.");
+            }
+            if (viewModel.Image != null && viewModel.Image.Length > 2000000)
+            {
+                ModelState.AddModelError(nameof(viewModel.Image), "Image should be less than 2M");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
             var menu = menuRepository.GetById(id);
-            if(menu is null)
+            if(menu == null)
             {
                 return NotFound();
             }
             if(viewModel.Image != null)
             {
                 var path = imageService.Save(viewModel.Image);
-                //imageService.Delete(viewModel.Menu.ImageUrl);
+                imageService.Delete(viewModel.Menu.ImageUrl);
                 menu.ImageUrl = path;
             }
             menu.Name = viewModel.Menu.Name;
@@ -87,23 +132,21 @@ namespace ReservationSystem.Web.Controllers
             menu.Price = viewModel.Menu.Price;
             menu.CategoryId = viewModel.Menu.CategoryId;
 
-
-
             menuRepository.Update(menu);
             return RedirectToAction("Index");
             
         }
 
-        
+        [Authorize]
         [HttpPost]
         public IActionResult Delete(int id)
         {
             var menu = menuRepository.GetById(id);
-            if (menu is null)
+            if (menu ==  null)
             {
                 return NotFound();
             }
-            //imageService.Delete(menu.ImageUrl!);
+            imageService.Delete(menu.ImageUrl!);
             menuRepository.Delete(menu);
             return RedirectToAction("Index");
         }

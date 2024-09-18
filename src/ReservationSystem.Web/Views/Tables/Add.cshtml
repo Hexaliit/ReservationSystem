@@ -1,16 +1,18 @@
 ﻿@model Table
 
-
-
-<div class="container-fluid">
-    <div class="col-12">
-        <form asp-controller="Tables" asp-action="Add" method="post">
+<div class="col-md-8 align-items-center">
+    <form asp-controller="Tables" asp-action="Add" method="post">
+        <div class="mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-4">
+                <h3 class="">Add Table</h3>
+            </div>
             <div class="row mb-3">
                 <div class="col-2">
                     <label asp-for="Name">Name : </label>
                 </div>
                 <div class="col-2">
                     <input type="text" asp-for="Name" class="w-100" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mb-3">
@@ -30,6 +32,7 @@
                 </div>
                 <div class="col-2">
                     <input type="number" asp-for="Capacity" />
+                    <span asp-validation-for="Capacity" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mb-3">
@@ -38,9 +41,12 @@
                 </div>
                 <div class="col-2">
                     <input type="text" asp-for="Location" class="w-100" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
                 </div>
             </div>
             <input type="submit" class="btn btn-success" value="Save" />
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
+       
+    

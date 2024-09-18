@@ -43,3 +43,8 @@ a:hover {
 .image-category {
     height : 150px;
 }
+
+.res-btn {
+    background: blueviolet;
+    border-radius: 20px;
+}

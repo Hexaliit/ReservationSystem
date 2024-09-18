@@ -1,83 +1,88 @@
 ﻿@model MenuViewModel
 
-<div class="container">
-    <div class="col-md-8">
+
+    <div class="col-md-8 align-items-center">
         <form asp-controller="Menus" asp-action="Add" method="post" enctype="multipart/form-data">
 
-            <div class="row mb-2">
-                <div class="col-2">
-                    <label asp-for="Menu.CategoryId" class="col-form-label">Category : </label>
+            <div class="mt-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-4">
+                    <h3 class="">Add Menu</h3>
                 </div>
-                <div class="col-8">
-                    <select asp-for="Menu.CategoryId" class="form-control">
-                        <option disabled>- Please Select </option>
-                        @if(Model.Categories != null && Model.Categories.Count() > 0)
-                        {
-                            @foreach (var category in Model.Categories)
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label asp-for="Menu.CategoryId" class="col-form-label">Category : </label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="Menu.CategoryId" class="form-control">
+                            <option disabled>- Please Select </option>
+                            @if (Model.Categories != null && Model.Categories.Count() > 0)
                             {
-                                <option value="@category.Id">@category.Name</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
                             }
-                        }
-                    </select>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <span class="text-danger" asp-validation-for="Menu.CategoryId"></span>
+                    </div>
                 </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.CategoryId"></span>
+
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label asp-for="Menu.Name" class="col-form-label">Name : </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-controll" asp-for="Menu.Name" />
+                    </div>
+                    <div class="col">
+                        <span class="text-danger" asp-validation-for="Menu.Name"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label asp-for="Menu.Description" class="col-form-label">Description : </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-controll" asp-for="Menu.Description" />
+                    </div>
+                    <div class="col">
+                        <span class="text-danger" asp-validation-for="Menu.Description"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label asp-for="@Model.Image" class="col-form-label">Image : </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="file" class="form-controll" asp-for="@Model.Image" />
+                    </div>
+                    <div class="col">
+                        <span class="text-danger" asp-validation-for="Menu.ImageUrl"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label asp-for="Menu.Price" class="col-form-label">Price : </label>
+                    </div>
+                    <div class="col-8">
+                        <input type="number" min="0" class="form-controll" asp-for="Menu.Price" />
+                    </div>
+                    <div class="col">
+                        <span class="text-danger" asp-validation-for="Menu.Price"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <input type="submit" class="btn btn-primary" value="Save" />
+                    </div>
                 </div>
             </div>
 
-            <div class="row mb-2">
-                <div class="col-2">
-                    <label asp-for="Menu.Name" class="col-form-label">Name : </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-controll" asp-for="Menu.Name" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.Name"></span>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-2">
-                    <label asp-for="Menu.Description" class="col-form-label">Description : </label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-controll" asp-for="Menu.Description" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.Description"></span>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-2">
-                    <label asp-for="@Model.Image" class="col-form-label">Image : </label>
-                </div>
-                <div class="col-8">
-                    <input type="file" class="form-controll" asp-for="@Model.Image" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.ImageUrl"></span>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-2">
-                    <label asp-for="Menu.Price" class="col-form-label">Price : </label>
-                </div>
-                <div class="col-8">
-                    <input type="number" min="0" class="form-controll" asp-for="Menu.Price" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.Price"></span>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-3">
-                    <input type="submit" class="btn btn-primary" value="Save" />
-                </div>
-            </div>
         </form>
     </div>
-</div>

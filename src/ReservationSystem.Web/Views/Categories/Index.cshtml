@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<Category>
 
+@using Microsoft.AspNetCore.Identity
 
+@inject SignInManager<IdentityUser> SigninManager
 
 
 <div class="col-md-8 align-items-center mx-auto">
@@ -11,7 +13,10 @@
             </h3>
         </div>
         <div class="col-md-3">
-            <a class="btn btn-primary" asp-controller="Categories" asp-action="Add">Add</a>
+            @if(SigninManager.IsSignedIn(User))
+            {
+                <a class="btn btn-primary" asp-controller="Categories" asp-action="Add">Add</a>
+            }
         </div>
     </div>
     

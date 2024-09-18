@@ -4,11 +4,13 @@
 
 @inject SignInManager<IdentityUser> SigninManager
 
+
+
     <div class="col-md-8 align-items-center mx-auto">
-    @if(ViewBag.ErrorMessage != null)
+    @if (TempData["Error"] != null)
     {
         <div class="alert alert-warning">
-            @ViewBag.ErrorMessage
+            @TempData["Error"]
         </div>
     }
     <div class="row align-items-center">
