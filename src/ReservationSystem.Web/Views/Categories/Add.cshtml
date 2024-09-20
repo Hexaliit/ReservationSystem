@@ -1,4 +1,4 @@
-﻿@model CategoryViewModel
+﻿@model AddCategoryViewModel
 
 
     <div class="col-md-8 align-items-center">
@@ -9,21 +9,21 @@
                 </div>
                 <div class="mb-3 row">
                     <div class="col-2">
-                        <label asp-for="Category.Name" class="col-form-label">Name : </label>
+                        <label asp-for="Name" class="col-form-label">Name : </label>
                     </div>
                     <div class="col-8">
-                        <input type="text" asp-for="Category.Name" class="form-controll w-100">
-                        <span asp-validation-for="@Model.Category.Name" class="text-danger"></span>
+                        <input type="text" asp-for="Name" class="form-control">
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <div class="col-2">
-                        <label asp-for="Category.Description" class="col-form-label">Description : </label>
+                        <label asp-for="Description" class="col-form-label">Description : </label>
                     </div>
                     <div class="col-8">
-                        <input type="text" asp-for="Category.Description" class="form-controll w-100">
-                        <span asp-validation-for="@Model.Category.Description" class="text-danger"></span>
+                        <input type="text" asp-for="Description" class="form-control">
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -32,8 +32,8 @@
                         <label asp-for="Image" class="col-form-label">Image Path : </label>
                     </div>
                     <div class="col-8">
-                        <input type="file" asp-for="Image" class="form-controll w-100">
-                        <span asp-validation-for="@Model.Image" class="text-danger"></span>
+                        <input type="file" asp-for="Image" class="form-control">
+                        <span asp-validation-for="Image" class="text-danger"></span>
                     </div>
                 </div>
 

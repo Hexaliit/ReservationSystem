@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Mappings\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

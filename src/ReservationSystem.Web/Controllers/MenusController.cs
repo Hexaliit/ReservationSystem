@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Web.Models;
 using ReservationSystem.Web.Models.Repositories.Interface;
@@ -13,19 +14,23 @@ namespace ReservationSystem.Web.Controllers
         private readonly ICategoryRepository categoryRepository;
         private readonly IMenuRepository menuRepository;
         private readonly IImageService imageService;
+        private readonly IMapper mapper;
 
         public MenusController(ICategoryRepository categoryRepository,
             IMenuRepository menuRepository,
-            IImageService imageService)
+            IImageService imageService,
+            IMapper mapper)
         {
             this.categoryRepository = categoryRepository;
             this.menuRepository = menuRepository;
             this.imageService = imageService;
+            this.mapper = mapper;
         }
         public IActionResult Index()
         {
             var menus = menuRepository.GetAll();
-            return View(menus);
+            var menusVM = mapper.Map<List<MenuDetailViewModel>>(menus);
+            return View(menusVM);
         }
         public IActionResult Get(int id)
         {
@@ -34,47 +39,34 @@ namespace ReservationSystem.Web.Controllers
             {
                 return NotFound();
             }
-            return View(menu);
+            var menuVM = mapper.Map<MenuDetailViewModel>(menu);
+            return View(menuVM);
         }
         [Authorize]
         public IActionResult Add()
         {
-            var menuViewModel = new MenuViewModel()
+            var menuViewModel = new AddMenuViewModel()
             {
-                Categories = categoryRepository.GetAllCategories()
+                Categories = mapper.Map<List<CategoryDetailViewModel>>(categoryRepository.GetAllCategories())
             };
             return View(menuViewModel);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult Add([FromForm] MenuViewModel menuViewModel)
+        public IActionResult Add([FromForm] AddMenuViewModel menuViewModel)
         {
-            if (string.IsNullOrEmpty(menuViewModel.Menu.Name))
+            
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(menuViewModel.Menu.Name), "Name is required");
+                var menu = mapper.Map<Menu>(menuViewModel);
+                var imageUrl = imageService.Save(menuViewModel.Image!);
+                menu.ImageUrl = imageUrl;
+                menuRepository.Add(menu);
+                return RedirectToAction("Index");
             }
-            if (string.IsNullOrEmpty(menuViewModel.Menu.Description))
-            {
-                ModelState.AddModelError(nameof(menuViewModel.Menu.Description), "Description is required");
-            }
-            if (menuViewModel.Menu.Price < 1)
-            {
-                ModelState.AddModelError(nameof(menuViewModel.Menu.Price), "Price can not be ngative or zero.");
-            }
-            if (menuViewModel.Image == null || menuViewModel.Image.Length > 2000000)
-            {
-                ModelState.AddModelError(nameof(menuViewModel.Image), "Image is requred and should be less than 2M");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(menuViewModel);
-            }
+            return View(menuViewModel);
 
-            var imageUrl = imageService.Save(menuViewModel.Image!);
-            menuViewModel.Menu.ImageUrl = imageUrl;
-            menuRepository.Add(menuViewModel.Menu);
-            return RedirectToAction("Index");
         }
         [Authorize]
         public IActionResult Edit(int id)
@@ -85,55 +77,33 @@ namespace ReservationSystem.Web.Controllers
                 return NotFound();
             }
 
-            var menuViewModel = new MenuViewModel()
-            {
-                Categories = categoryRepository.GetAllCategories(),
-                Menu = menuRepository.GetById(id) ?? new Menu()
-            };
+            var menuViewModel = mapper.Map<EditMenuViewModel>(menu);
+            menuViewModel.Categories = mapper.Map<List<CategoryDetailViewModel>>(categoryRepository.GetAllCategories());
             return View(menuViewModel);
         }
         [Authorize]
         [HttpPost]
-        public IActionResult Edit(int id, MenuViewModel viewModel)
+        public IActionResult Edit(int id, EditMenuViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(viewModel.Menu.Name))
+            
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(viewModel.Menu.Name), "Name is required");
+                var menu = menuRepository.GetById(id);
+                if(menu == null)
+                {
+                    return NotFound();
+                }
+                mapper.Map(viewModel, menu);
+                if(viewModel.Image != null)
+                {
+                    var path = imageService.Save(viewModel.Image);
+                    imageService.Delete(menu.ImageUrl!);
+                    menu.ImageUrl = path;
+                }
+                menuRepository.Update(menu);
+                return RedirectToAction("Index");
             }
-            if (string.IsNullOrEmpty(viewModel.Menu.Description))
-            {
-                ModelState.AddModelError(nameof(viewModel.Menu.Description), "Description is required");
-            }
-            if (viewModel.Menu.Price < 1)
-            {
-                ModelState.AddModelError(nameof(viewModel.Menu.Price), "Price can not be ngative or zero.");
-            }
-            if (viewModel.Image != null && viewModel.Image.Length > 2000000)
-            {
-                ModelState.AddModelError(nameof(viewModel.Image), "Image should be less than 2M");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-            var menu = menuRepository.GetById(id);
-            if(menu == null)
-            {
-                return NotFound();
-            }
-            if(viewModel.Image != null)
-            {
-                var path = imageService.Save(viewModel.Image);
-                imageService.Delete(viewModel.Menu.ImageUrl);
-                menu.ImageUrl = path;
-            }
-            menu.Name = viewModel.Menu.Name;
-            menu.Description = viewModel.Menu.Description;
-            menu.Price = viewModel.Menu.Price;
-            menu.CategoryId = viewModel.Menu.CategoryId;
-
-            menuRepository.Update(menu);
-            return RedirectToAction("Index");
+            return View(viewModel);
             
         }
 

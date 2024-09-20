@@ -1,4 +1,4 @@
-﻿@model Table
+﻿@model EditTableViewModel
 
 
     <div class="col-md-8 align-items-center">
@@ -12,8 +12,8 @@
                 <div class="col-2">
                     <label asp-for="Name">Name : </label>
                 </div>
-                <div class="col-2">
-                    <input type="text" asp-for="Name" class="w-100" />
+                <div class="col-10">
+                    <input type="text" asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
             </div>
@@ -21,8 +21,8 @@
                 <div class="col-2">
                     <label asp-for="Status">Status : </label>
                 </div>
-                <div class="col-2">
-                    <select asp-for="Status">
+                <div class="col-10">
+                    <select asp-for="Status" class="form-control">
                         <option value="@TableStatus.Available">Available</option>
                         <option value="@TableStatus.Reserved">Reserved</option>
                     </select>
@@ -32,8 +32,8 @@
                 <div class="col-2">
                     <label asp-for="Capacity">Capacity : </label>
                 </div>
-                <div class="col-2">
-                    <input type="number" asp-for="Capacity" />
+                <div class="col-10">
+                    <input type="number" asp-for="Capacity" class="form-control" />
                     <span asp-validation-for="Capacity" class="text-danger"></span>
                 </div>
             </div>
@@ -41,8 +41,8 @@
                 <div class="col-2">
                     <label asp-for="Location">Location : </label>
                 </div>
-                <div class="col-2">
-                    <input type="text" asp-for="Location" class="w-100" />
+                <div class="col-10">
+                    <input type="text" asp-for="Location" class="form-control" />
                     <span asp-validation-for="Location" class="text-danger"></span>
                 </div>
             </div>

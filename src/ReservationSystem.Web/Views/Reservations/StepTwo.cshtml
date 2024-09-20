@@ -13,10 +13,10 @@
 
             <form method="post" asp-controller="Reservations" asp-action="StepTwo">
                 <div class="form-group">
-                    <label asp-for="@Model">Table</label>
+                    <label asp-for="Id">Table</label>
                     @if(Model.Tables is not null && Model.Tables.Count() > 0)
                     {
-                        <select class="form-select" asp-for="@Model.Table.Id">
+                        <select class="form-select" asp-for="Id">
                             @foreach (var table in Model.Tables)
                             {
                                 <option value="@table.Id">@table.Location - @table.Capacity</option>

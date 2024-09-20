@@ -4,7 +4,8 @@ namespace ReservationSystem.Web.ViewModel
 {
     public class TablesViewModel
     {
-        public IEnumerable<Table>? Tables { get; set; }
-        public Table? Table { get; set; }
+        public IEnumerable<TableDetailViewModel>? Tables { get; set; }
+        //public TableDetailViewModel? Table { get; set; }
+        public int Id { get; set; }
     }
 }

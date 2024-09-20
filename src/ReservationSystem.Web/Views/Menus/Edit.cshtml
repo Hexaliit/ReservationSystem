@@ -1,19 +1,18 @@
-﻿@model MenuViewModel
+﻿@model EditMenuViewModel
 
 <div class="col-md-8  align-items-center">
         <form asp-controller="Menus" asp-action="Edit" method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="Menu.Id" />
+            <input type="hidden" asp-for="Id" />
             <div class="mt-5">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-4">
-                <h3 class="">Add Menu</h3>
+                <h3 class="">Edit Menu</h3>
             </div>
             <div class="row mb-2">
                 <div class="col-2">
-                    <label asp-for="Menu.CategoryId" class="col-form-label">Category : </label>
+                    <label asp-for="CategoryId" class="col-form-label">Category : </label>
                 </div>
                 <div class="col-8">
-                    <select asp-for="Menu.CategoryId" class="form-control">
-                        <option disabled>- Please Select </option>
+                    <select asp-for="CategoryId" class="form-control">
                         @if (Model.Categories != null && Model.Categories.Count() > 0)
                         {
                             @foreach (var category in Model.Categories)
@@ -22,33 +21,27 @@
                             }
                         }
                     </select>
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.CategoryId"></span>
+                    <span class="text-danger" asp-validation-for="CategoryId"></span>
                 </div>
             </div>
 
             <div class="row mb-2">
                 <div class="col-2">
-                    <label asp-for="Menu.Name" class="col-form-label">Name : </label>
+                    <label asp-for="Name" class="col-form-label">Name : </label>
                 </div>
                 <div class="col-8">
-                    <input type="text" class="form-controll" asp-for="Menu.Name" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.Name"></span>
+                    <input type="text" class="form-control" asp-for="Name" />
+                    <span class="text-danger" asp-validation-for="Name"></span>
                 </div>
             </div>
 
             <div class="row mb-2">
                 <div class="col-2">
-                    <label asp-for="Menu.Description" class="col-form-label">Description : </label>
+                    <label asp-for="Description" class="col-form-label">Description : </label>
                 </div>
                 <div class="col-8">
-                    <input type="text" class="form-controll" asp-for="Menu.Description" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.Description"></span>
+                    <input type="text" class="form-control" asp-for="Description" />
+                    <span class="text-danger" asp-validation-for="Description"></span>
                 </div>
             </div>
 
@@ -57,22 +50,18 @@
                     <label asp-for="Image" class="col-form-label">Image : </label>
                 </div>
                 <div class="col-8">
-                    <input type="file" class="form-controll" asp-for="Image" />
-                </div>
-                <div class="col">
+                    <input type="file" class="form-control" asp-for="Image" />
                     <span class="text-danger" asp-validation-for="Image"></span>
                 </div>
             </div>
 
             <div class="row mb-2">
                 <div class="col-2">
-                    <label asp-for="Menu.Price" class="col-form-label">Price : </label>
+                    <label asp-for="Price" class="col-form-label">Price : </label>
                 </div>
                 <div class="col-8">
-                    <input type="number" min="0" class="form-controll" asp-for="Menu.Price" />
-                </div>
-                <div class="col">
-                    <span class="text-danger" asp-validation-for="Menu.Price"></span>
+                    <input type="number" min="0" class="form-control" asp-for="Price" />
+                    <span class="text-danger" asp-validation-for="Price"></span>
                 </div>
             </div>
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReservationSystem.Web.Models;
 using ReservationSystem.Web.Models.Repositories.Interface;
@@ -9,42 +10,36 @@ namespace ReservationSystem.Web.Controllers
     [Authorize]
     public class TablesController : Controller
     {
+        
         private readonly ITableRepository tableRepository;
+        private readonly IMapper mapper;
 
-        public TablesController(ITableRepository tableRepository)
+        public TablesController(ITableRepository tableRepository,
+            IMapper mapper)
         {
             this.tableRepository = tableRepository;
+            this.mapper = mapper;
         }
         public IActionResult Index()
         {
             var tables = tableRepository.GetAll();
-            return View(tables);
+            var tablesVM = mapper.Map<List<TableDetailViewModel>>(tables);
+            return View(tablesVM);
         }
         public IActionResult Add()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Add(Table table)
+        public IActionResult Add(AddTAbleViewModel viewModel)
         {
-            if(string.IsNullOrEmpty(table.Name) || table.Name.Length > 50)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(table.Name), "Name is required and should be less than 50 characters");
+                var table = mapper.Map<Table>(viewModel);
+                tableRepository.Add(table);
+                return RedirectToAction("Index");
             }
-            if (string.IsNullOrEmpty(table.Location) || table.Location.Length > 50)
-            {
-                ModelState.AddModelError(nameof(table.Location), "Name is required and should be less than 50 characters");
-            }
-            if (table.Capacity > 20)
-            {
-                ModelState.AddModelError(nameof(table.Capacity), "Capacity must be less than 20");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(table);
-            }
-            tableRepository.Add(table);
-            return RedirectToAction("Index");
+            return View(viewModel);
         }
 
         public IActionResult Edit(int id)
@@ -54,39 +49,25 @@ namespace ReservationSystem.Web.Controllers
             {
                 return NotFound();
             }
-            return View(table);
+            var tableVM = mapper.Map<EditTableViewModel>(table);
+            return View(tableVM);
         }
 
         [HttpPost]
-        public IActionResult Update(int id, Table table)
+        public IActionResult Update(int id, EditTableViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(table.Name) || table.Name.Length > 50)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(table.Name), "Name is required and should be less than 50 characters");
+                var table = tableRepository.GetById(id);
+                if(table == null)
+                {
+                    return NotFound();
+                }
+                mapper.Map(viewModel, table);
+                tableRepository.Update(table);
+                return RedirectToAction("Index");
             }
-            if (string.IsNullOrEmpty(table.Location) || table.Location.Length > 50)
-            {
-                ModelState.AddModelError(nameof(table.Location), "Name is required and should be less than 50 characters");
-            }
-            if (table.Capacity > 20)
-            {
-                ModelState.AddModelError(nameof(table.Capacity), "Capacity must be less than 20");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(table);
-            }
-            var existingTable = tableRepository.GetById(id);
-            if(existingTable == null)
-            {
-                return NotFound();
-            }
-            existingTable.Name = table.Name;
-            existingTable.Capacity = table.Capacity;
-            existingTable.Location = table.Location;
-            existingTable.Status = table.Status;
-            tableRepository.Update(existingTable);
-            return RedirectToAction("Index");
+            return View(viewModel);
         }
     }
 }

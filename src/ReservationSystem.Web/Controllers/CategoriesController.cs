@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReservationSystem.Web.Constants;
 using ReservationSystem.Web.Models;
 using ReservationSystem.Web.Models.Repositories.Interface;
 using ReservationSystem.Web.Services.ImageService.Interface;
@@ -11,17 +13,21 @@ namespace ReservationSystem.Web.Controllers
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IImageService imageService;
+        private readonly IMapper mapper;
 
         public CategoriesController(ICategoryRepository categoryRepository,
-            IImageService imageService)
+            IImageService imageService,
+            IMapper mapper)
         {
             this.categoryRepository = categoryRepository;
             this.imageService = imageService;
+            this.mapper = mapper;
         }
         public IActionResult Index()
         {
             var categories = categoryRepository.GetAllCategories();
-            return View(categories);
+            var categoriesVM = mapper.Map<List<CategoryDetailViewModel>>(categories);
+            return View(categoriesVM);
         }
         public IActionResult Get(int id)
         {
@@ -30,7 +36,8 @@ namespace ReservationSystem.Web.Controllers
             {
                 return NotFound();
             }
-            return View(category);
+            var categoryVM = mapper.Map<CategoryDetailViewModel>(category);
+            return View(categoryVM);
         }
         [Authorize]
         public IActionResult Add()
@@ -39,29 +46,17 @@ namespace ReservationSystem.Web.Controllers
         }
         [Authorize]
         [HttpPost]
-        public IActionResult Add([FromForm] CategoryViewModel viewModel)
+        public IActionResult Add([FromForm] AddCategoryViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(viewModel.Category.Name))
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(viewModel.Category.Name), "Name is required");
+                var category = mapper.Map<Category>(viewModel);
+                var path = imageService.Save(viewModel.Image!);
+                category.ImagePath = path;
+                categoryRepository.AddCategory(category);
+                return RedirectToAction(nameof(Index));
             }
-            if (string.IsNullOrEmpty(viewModel.Category.Description))
-            {
-                ModelState.AddModelError(nameof(viewModel.Category.Description), "Decription is required");
-            }
-            
-            if(viewModel.Image == null || viewModel.Image.Length > 2000000)
-            {
-                ModelState.AddModelError(nameof(viewModel.Image), "Image is required and should be less than 2M");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-            var path = imageService.Save(viewModel.Image);
-            viewModel.Category.ImagePath = path;
-            categoryRepository.AddCategory(viewModel.Category);
-            return RedirectToAction(nameof(Index));
+            return View(viewModel);
         }
         [Authorize]
         public IActionResult Edit(int id)
@@ -71,44 +66,32 @@ namespace ReservationSystem.Web.Controllers
             {
                 return NotFound();
             }
-            return View(new CategoryViewModel() { Category = category});
+            var categoryVM = mapper.Map<EditCategoryViewModel>(category);
+            return View(categoryVM);
         }
         [Authorize]
         [HttpPost]
-        public IActionResult Edit(int id,  [FromForm] CategoryViewModel viewModel)
+        public IActionResult Edit(int id,  [FromForm] EditCategoryViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(viewModel.Category.Name))
+            
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(viewModel.Category.Name), "Name is required");
+                var category = categoryRepository.GetById(id);
+                if(category == null)
+                {
+                    return NotFound();
+                }
+                mapper.Map(viewModel, category);
+                if (viewModel.Image != null )
+                {
+                    var path = imageService.Save(viewModel.Image);
+                    category.ImagePath = path;
+                }
+                
+                categoryRepository.Update(category);
+                return RedirectToAction(nameof(Index));
             }
-            if (string.IsNullOrEmpty(viewModel.Category.Description))
-            {
-                ModelState.AddModelError(nameof(viewModel.Category.Description), "Decription is required");
-            }
-
-            if (viewModel.Image != null && viewModel.Image.Length > 2000000)
-            {
-                ModelState.AddModelError(nameof(viewModel.Image), "Image should be less than 2M");
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-            var category = categoryRepository.GetById(id);
-            if(category == null)
-            {
-                return NotFound();
-            }
-            if(viewModel.Image != null )
-            {
-                var path = imageService.Save(viewModel.Image);
-                category.ImagePath = path;
-            }
-            category.Name = viewModel.Category.Name;
-            category.Description = viewModel.Category.Description;
-
-            categoryRepository.Update(category);
-            return RedirectToAction(nameof(Index));
+            return View(viewModel);
         }
         [Authorize]
         [HttpPost]
@@ -121,7 +104,7 @@ namespace ReservationSystem.Web.Controllers
             }
             if (category.Menus.Any())
             {
-                TempData["Error"] = "This Category Has Some Menu Dependency And Can Not Be Deleted.";
+                TempData["Error"] = Messages.Dependency;
                 return Redirect($"/Categories/Get/{id}");
             }
             else {
